@@ -26,25 +26,48 @@ namespace Fivet.Server
         ///</summary>
         private readonly Communicator _communicator;
 
+        /// <summary>
+        /// The system interface
+        /// </summary>
+        private readonly TheSystemDisp_ _theSystem;
+        private readonly ContratosDisp_ _contratos;
+
         ///<summary>
         /// The FivetService.
         ///</summary>
-        public FivetService(ILogger<FivetService> logger)
+        public FivetService(ILogger<FivetService> logger, TheSystemDisp_ theSystem , ContratosDisp_ contratos)
         {
-            _logger = logger;
+           _logger = logger;
+            _logger.LogDebug("Building FivetServic..");
+            _theSystem = theSystem;
+            _contratos = contratos;
             _communicator = buildCommunicator();
         }
 
         private Communicator buildCommunicator()
         {
-            _logger.LogDebug("Initializing Communicator v{0} ({1}) ..", Ice.Util.stringVersion(), Ice.Util.intVersion());
+           _logger.LogDebug("Initializing Communicator v{0} ({1}) .. ", Ice.Util.stringVersion(),Ice.Util.intVersion());
 
-            Properties properties = Util.createProperties();
-
+            //ZeroC Properties
+            Properties properties =  Util.createProperties();
+            // https://doc.zeroc.com/ice/latest/property-reference/ice-trace
+            // properties.setProperty("Ice.Trace.Admin.Properties", "1");
+            // properties.setProperty("Ice.Trace.Locator", "2");
+            // properties.setProperty("Ice.Trace.Network", "3");
+            // properties.setProperty("Ice.Trace.Protocol", "1");
+            // properties.setProperty("Ice.Trace.Slicing", "1");
+            // properties.setProperty("Ice.Trace.ThreadPool", "1");
+            // properties.setProperty("Ice.Compression.Level", "9");
             InitializationData initializationData = new InitializationData();
             initializationData.properties = properties;
-            return Ice.Util.initialize(initializationData);
 
+            return Ice.Util.initialize(initializationData);
+        }
+        /// <summary>
+        /// Clear the Memory.
+        /// </summary>
+        public void Dispose(){
+            _communicator.destroy();
         }
         
         ///<summary>
@@ -54,16 +77,17 @@ namespace Fivet.Server
         {
             _logger.LogDebug("Starting the FivetService ... ");
 
-            var adapter = _communicator.createObjectAdapterWithEndpoints("TheAdapter", "tcp -z -t 15000 -p " + _port);
+            var adapter = _communicator.createObjectAdapterWithEndpoints("TheSystem", "tcp -z -t 15000 -p " + _port);
 
-            // The interface
-            TheSystem theSystem = new TheSystemImpl();
 
             // Register in the communicator
-            adapter.add(theSystem, Util.stringToIdentity("TheSystem"));
+            adapter.add(_theSystem, Util.stringToIdentity("TheSystem"));
 
             // Activation
             adapter.activate();
+
+            // FIXME: Remove
+            _theSystem.getDelay(0);
 
             //All ok
             return Task.CompletedTask;
