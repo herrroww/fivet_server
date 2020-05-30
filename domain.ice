@@ -29,12 +29,13 @@ module model {
    /**
     *The Persona
     */
+   ["cs:property"] 
    class Persona{
 
    /**
     * PK
     */
-   int id;
+   int uid;
 
    /**
     * Rut: 815184009
@@ -45,6 +46,8 @@ module model {
     * Nombre
     */
    string nombre;
+
+   string apellido;
 
    /**
     * Direccion
@@ -87,12 +90,13 @@ module model {
    /**
     * The Ficha.
     */
+   ["cs:property"] 
    class Ficha{
 
    /**
     * PK
     */
-   int id;
+   int uid;
 
    /**
     * Numero: 1554.
@@ -140,13 +144,13 @@ module model {
    /**
     * The foto
     */
-
+   ["cs:property"] 
    class Foto{
 
    /**
     * id del examen
     */
-   int id;
+   int uid;
 
    /*
     * Url de la foto.
@@ -157,12 +161,13 @@ module model {
    /**
     * The control
     */
+    ["cs:property"] 
    class Control {
 
    /**
     * PK
     */
-   int id;
+   int uid;
 
    /**
     * Fecha del control
@@ -205,12 +210,13 @@ module model {
    /**
     * The Examen
     */
+    ["cs:property"] 
    class Examen{
 
    /**
     * PK
     */
-   int id;
+   int uid;
 
    /**
     * Nombre del examen: Radiología
