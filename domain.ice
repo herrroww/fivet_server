@@ -274,6 +274,10 @@ module model {
      * @return the Persona.
      */
      Persona obtenerPersona(string rut);
+
+    Foto agregarFoto (Foto foto);
+
+    long getDelay(long clientTime);
    }
 
 
